@@ -15,6 +15,10 @@
     <preference name="DisallowOverscroll" value="true" />
     <preference name="phonegap-version" value="3.3.0" />
     
+    <preference name="AutoHideSplashScreen" value="false" />
+    
+    <gap:splash src="img/Default@2x.png" gap:platform="ios" width="640" height="960" /> 
+    
     <icon src="img/Icon-60@2x.png" />
     
     <feature name="StatusBar">
