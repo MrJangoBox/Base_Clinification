@@ -17,7 +17,7 @@
     
     <preference name="AutoHideSplashScreen" value="false" />
     
-    <gap:splash src="img/Default@2x.png" gap:platform="ios" width="640" height="960" /> 
+    <gap:splash src="img/Default@2x.png" gap:platform="ios" width="750" height="1334" /> 
     
     <icon src="img/Icon-60@2x.png" />
     
