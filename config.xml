@@ -14,10 +14,14 @@
     <preference name="UIWebViewBounce" value="false" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="phonegap-version" value="3.3.0" />
+<!--
     
     <preference name="AutoHideSplashScreen" value="false" />
+-->
     
-    <gap:splash src="Resources/splash/Default-568h@2x~iphone.png" gap:platform="ios" width="750" height="1334" /> 
+    <platform name="ios">
+        <splash src="img/Default-568h@2x~iphone.png" width="2048" height="1536"/> 
+    </platform>
     
     <icon src="img/Icon-60@2x.png" />
     
