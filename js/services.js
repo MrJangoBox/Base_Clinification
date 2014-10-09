@@ -2,7 +2,7 @@ angular.module('baseApp.services', [])
 
 .factory('API', function ($rootScope, $http, $ionicLoading, $window) {
    //var base = "http://localhost:9804";
-    var base = "http://salty-sands-1759.herokuapp.com";
+    var base = "http://clinificationappserver.herokuapp.com";
     $rootScope.show = function (text) {
         $rootScope.loading = $ionicLoading.show({
             content: text ? text : 'Loading',
