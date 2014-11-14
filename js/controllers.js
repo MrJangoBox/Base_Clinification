@@ -7,23 +7,23 @@ angular.module('baseApp.controllers', ['baseApp.services'])
     }
  
     $scope.user = {
-        email: "",
+        cellphone: "",
         password: ""
     };
  
     $scope.validateUser = function () {
-        var email = this.user.email;
+        var cellphone = this.user.cellphone;
         var password = this.user.password;
-        if(!email || !password) {
+        if(!cellphone || !password) {
             $rootScope.notify("Please enter valid credentials");
             return false;
         }
         $rootScope.show('Please wait.. Authenticating');
         API.signin({
-            email: email,
+            cellphone: cellphone,
             password: password
         }).success(function (data) {
-            $rootScope.setToken(email); // create a session kind of thing on the client side
+            $rootScope.setToken(cellphone); // create a session kind of thing on the client side
             $rootScope.hide();
             $window.location.href = ('#/base/list');
         }).error(function (error) {
@@ -36,33 +36,33 @@ angular.module('baseApp.controllers', ['baseApp.services'])
  
 .controller('SignUpCtrl', function ($rootScope, $scope, API, $window) {
     $scope.user = {
-        email: "",
+        cellphone: "",
         password: "",
         name: ""
     };
  
     $scope.createUser = function () {
-        var email = this.user.email;
+        var cellphone = this.user.cellphone;
         var password = this.user.password;
         var uName = this.user.name;
-        if(!email || !password || !uName) {
+        if(!cellphone || !password || !uName) {
             $rootScope.notify("Please enter valid data");
             return false;
         }
         $rootScope.show('Please wait.. Registering');
         API.signup({
-            email: email,
+            cellphone: cellphone,
             password: password,
             name: uName
         }).success(function (data) {
-            $rootScope.setToken(email); // create a session kind of thing on the client side
+            $rootScope.setToken(cellphone); // create a session kind of thing on the client side
             $rootScope.hide();
             $window.location.href = ('#/base/list');
         }).error(function (error) {
             $rootScope.hide();
             if(error.error && error.error.code == 11000)
             {
-                $rootScope.notify("A user with this email already exists");
+                $rootScope.notify("A user with this cellphone already exists");
             }
             else
             {
