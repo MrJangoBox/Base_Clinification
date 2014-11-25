@@ -57,43 +57,43 @@ angular.module('baseApp.services', [])
         signup: function (form) {
             return $http.post(base+'/api/v1/baseApp/auth/register', form);
         },
-        getAll: function (email) {
+        getAll: function (cellphone) {
             return $http.get(base+'/api/v1/baseApp/data/list', {
                 method: 'GET',
                 params: {
-                    token: email
+                    token: cellphone
                 }
             });
         },
-        getOne: function (id, email) {
+        getOne: function (id, cellphone) {
             return $http.get(base+'/api/v1/baseApp/data/item/' + id, {
                 method: 'GET',
                 params: {
-                    token: email
+                    token: cellphone
                 }
             });
         },
-        saveItem: function (form, email) {
+        saveItem: function (form, cellphone) {
             return $http.post(base+'/api/v1/baseApp/data/item', form, {
                 method: 'POST',
                 params: {
-                    token: email
+                    token: cellphone
                 }
             });
         },
-        putItem: function (id, form, email) {
+        putItem: function (id, form, cellphone) {
             return $http.put(base+'/api/v1/baseApp/data/item/' + id, form, {
                 method: 'PUT',
                 params: {
-                    token: email
+                    token: cellphone
                 }
             });
         },
-        deleteItem: function (id, email) {
+        deleteItem: function (id, cellphone) {
             return $http.delete(base+'/api/v1/baseApp/data/item/' + id, {
                 method: 'DELETE',
                 params: {
-                    token: email
+                    token: cellphone
                 }
             });
         }

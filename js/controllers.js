@@ -23,7 +23,7 @@ angular.module('baseApp.controllers', ['baseApp.services'])
             cellphone: cellphone,
             password: password
         }).success(function (data) {
-            $rootScope.setToken(cellphone); // create a session kind of thing on the client side
+            $rootScope.setToken(cellphone); // creates a session kind of thing on the client side
             $rootScope.hide();
             $window.location.href = ('#/base/list');
         }).error(function (error) {
