@@ -1,4 +1,4 @@
-angular.module('baseApp', ['ionic', 'baseApp.controllers', 'baseApp.services'])
+angular.module('clinifApp', ['ionic', 'clinifApp.controllers', 'clinifApp.services'])
     .run(function ($ionicPlatform) {
         $ionicPlatform.ready(function () {
             if (window.StatusBar) {
@@ -32,26 +32,40 @@ angular.module('baseApp', ['ionic', 'baseApp.controllers', 'baseApp.services'])
                     }
                 }
             })
-            .state('base', {
-                url: "/base",
+            .state('clinif', {
+                url: "/clinif",
                 abstract: true,
-                templateUrl: "templates/base.html"
+                templateUrl: "templates/clinif.html"
             })
-            .state('base.list', {
+            .state('clinif.list', {
                 url: '/list',
                 views: {
-                    'base-list': {
-                        templateUrl: 'templates/base-list.html',
+                    'clinif-list': {
+                        templateUrl: 'templates/clinif-list.html',
                         controller: 'myListCtrl'
                     }
                 }
             })
-            .state('base.completed', {
+            .state('clinif.completed', {
                 url: '/completed',
                 views: {
-                    'base-completed': {
-                        templateUrl: 'templates/base-completed.html',
+                    'clinif-completed': {
+                        templateUrl: 'templates/clinif-completed.html',
                         controller: 'completedCtrl'
+                    }
+                }
+            })
+            .state('menu', {
+                url: "/menu",
+                abstract: true,
+                templateUrl: "templates/menu.html"
+            })
+            .state('menu.profile', {
+                url: '/profile',
+                views: {
+                    'menu-profile': {
+                        templateUrl: 'templates/menu-profile.html',
+                        controller: 'myProfileCtrl'
                     }
                 }
             })

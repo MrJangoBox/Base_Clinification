@@ -1,14 +1,18 @@
-angular.module('baseApp.controllers', ['baseApp.services'])
+angular.module('clinifApp.controllers', ['clinifApp.services'])
  
 .controller('SignInCtrl', function ($rootScope, $scope, API, $window) {
-    // if the user is already logged in, take him to his base app
+    // if the user is already logged in, take him to his appointment page
     if ($rootScope.isSessionActive()) {
-        $window.location.href = ('#/base/list');
+        $window.location.href = ('#/clinif/list');
     }
  
     $scope.user = {
         cellphone: "",
         password: ""
+    };
+    
+    $rootScope.showMenuButton = function () {
+        return "false";
     };
  
     $scope.validateUser = function () {
@@ -25,7 +29,7 @@ angular.module('baseApp.controllers', ['baseApp.services'])
         }).success(function (data) {
             $rootScope.setToken(cellphone); // creates a session kind of thing on the client side
             $rootScope.hide();
-            $window.location.href = ('#/base/list');
+            $window.location.href = ('#/clinif/list');
         }).error(function (error) {
             $rootScope.hide();
             $rootScope.notify("Invalid Username or password");
@@ -36,28 +40,38 @@ angular.module('baseApp.controllers', ['baseApp.services'])
  
 .controller('SignUpCtrl', function ($rootScope, $scope, API, $window) {
     $scope.user = {
+        firstName: "",
+        lastName: "",
         cellphone: "",
-        password: "",
-        name: ""
+        language: "",
+        password: ""
+    };
+    
+    $rootScope.showMenuButton = function () {
+        return "false";
     };
  
     $scope.createUser = function () {
+        var firstName = this.user.firstName;
+        var lastName = this.user.lastName;
         var cellphone = this.user.cellphone;
+        var language = this.user.language;
         var password = this.user.password;
-        var uName = this.user.name;
-        if(!cellphone || !password || !uName) {
+        if(!cellphone || !password || !language) {
             $rootScope.notify("Please enter valid data");
             return false;
         }
         $rootScope.show('Please wait.. Registering');
         API.signup({
+            firstName: firstName,
+            lastName: lastName,
             cellphone: cellphone,
-            password: password,
-            name: uName
+            language: language,
+            password: password
         }).success(function (data) {
             $rootScope.setToken(cellphone); // create a session kind of thing on the client side
             $rootScope.hide();
-            $window.location.href = ('#/base/list');
+            $window.location.href = ('#/clinif/list');
         }).error(function (error) {
             $rootScope.hide();
             if(error.error && error.error.code == 11000)
@@ -73,9 +87,15 @@ angular.module('baseApp.controllers', ['baseApp.services'])
     }
 })
  
+// Appointment list controller
 .controller('myListCtrl', function ($rootScope, $scope, API, $timeout, $ionicModal, $window) {
     $rootScope.$on('fetchAll', function(){
-            API.getAll($rootScope.getToken()).success(function (data, status, headers, config) {
+        
+        $rootScope.showMenuButton = function () {
+            return "true";
+        };
+        
+        API.getAll($rootScope.getToken()).success(function (data, status, headers, config) {
             $rootScope.show("Please wait... Processing");
             $scope.list = [];
             for (var i = 0; i < data.length; i++) {
@@ -91,7 +111,7 @@ angular.module('baseApp.controllers', ['baseApp.services'])
             {
                 $scope.noData = false;
             }
- 
+            
             $ionicModal.fromTemplateUrl('templates/newItem.html', function (modal) {
                 $scope.newTemplate = modal;
             });
@@ -99,15 +119,16 @@ angular.module('baseApp.controllers', ['baseApp.services'])
             $scope.newTask = function () {
                 $scope.newTemplate.show();
             };
+                
             $rootScope.hide();
         }).error(function (data, status, headers, config) {
             $rootScope.hide();
             $rootScope.notify("Oops something went wrong!! Please try again later");
         });
     });
- 
+    
     $rootScope.$broadcast('fetchAll');
- 
+    
     $scope.markCompleted = function (id) {
         $rootScope.show("Please wait... Updating List");
         API.putItem(id, {
@@ -122,8 +143,6 @@ angular.module('baseApp.controllers', ['baseApp.services'])
             });
     };
  
- 
- 
     $scope.deleteItem = function (id) {
         $rootScope.show("Please wait... Deleting from List");
         API.deleteItem(id, $rootScope.getToken())
@@ -135,6 +154,103 @@ angular.module('baseApp.controllers', ['baseApp.services'])
                 $rootScope.notify("Oops something went wrong!! Please try again later");
             });
     };
+ 
+})
+
+// Profile controller
+.controller('myProfileCtrl', function ($rootScope, $scope, API, $timeout, $ionicModal, $window) {
+    $rootScope.$on('fetchAll', function(){
+        
+        $rootScope.showMenuButton = function () {
+            return "true";
+        };
+        
+        API.getProfileInfo($rootScope.getToken()).success(function (data, status, headers, config) {
+            $rootScope.show("Please wait... Processing");
+            $scope.profile = [];
+            $scope.profile.push(data);
+                
+            $rootScope.hide();
+        }).error(function (data, status, headers, config) {
+            $rootScope.hide();
+            $rootScope.notify("Oops something went wrong!! Please try again later");
+        });
+    });
+    
+    $rootScope.$broadcast('fetchAll');
+ 
+})
+
+// App index controller
+.controller('indexCtrl', function ($rootScope, $scope, API, $timeout, $ionicModal, $window) {
+    $rootScope.$on('fetchAll', function(){
+        
+        API.getAll($rootScope.getToken()).success(function (data, status, headers, config) {
+            $rootScope.show("Please wait... Processing");
+            $scope.list = [];
+            $scope.categoriesLoaded = [];
+            for (var i = 0; i < data.length; i++) {
+                $scope.categoryExist = false;
+                
+                numOfCategories = $scope.categoriesLoaded.length;
+                console.log(numOfCategories);
+                
+                if (numOfCategories == 0) {
+                        $scope.categoriesLoaded.push(data[i].category);
+                        console.log(data[i].category);
+                }
+                
+                for (var j = 0; j < numOfCategories; j++) {    
+                    
+                    if (data[i].category == $scope.categoriesLoaded[j])
+                    {
+                        $scope.categoryExist = true;
+                    }
+                }
+                
+                if ($scope.categoryExist == false)
+                {
+                    $scope.list.push(data[i]);
+                    $scope.categoriesLoaded.push(data[i].category);
+                }
+            };
+            if($scope.list.length == 0)
+            {
+                $scope.noData = true;
+            }
+            else
+            {
+                $scope.noData = false;
+            }
+            
+            $ionicModal.fromTemplateUrl('templates/newItem.html', function (modal) {
+                $scope.newTemplate = modal;
+            });
+ 
+            $scope.newTask = function () {
+                $scope.newTemplate.show();
+            };
+                
+            $rootScope.hide();
+        }).error(function (data, status, headers, config) {
+            $rootScope.hide();
+            $rootScope.notify("Oops something went wrong!! Please try again later");
+        });
+    });
+ 
+    $rootScope.selectCategory = function (category) {
+                $window.location.href="#/clinif/category"
+                $rootScope.category = category
+                $scope.$broadcast("$destroy");
+            };
+    
+    $rootScope.toProfile = function () {
+                $rootScope.hide();
+                $window.location.href = ('#/menu/profile');
+//                $scope.$broadcast("$destroy");
+            };
+    
+    $rootScope.$broadcast('fetchAll');
  
 })
  
@@ -170,6 +286,10 @@ angular.module('baseApp.controllers', ['baseApp.services'])
 
     });
 
+    $rootScope.showMenuButton = function () {
+        return "true";
+    };
+    
     $rootScope.$broadcast('fetchCompleted');
     $scope.deleteItem = function (id) {
         $rootScope.show("Please wait... Deleting from List");
@@ -182,6 +302,82 @@ angular.module('baseApp.controllers', ['baseApp.services'])
                 $rootScope.notify("Oops something went wrong!! Please try again later");
             });
     };
+})
+
+// Side-menu controller
+.controller('menuCtrl', function ($rootScope, $scope, API, $timeout, $ionicModal, $window) {
+    $rootScope.$on('fetchAll', function(){
+        
+        $rootScope.showMenuButton = function () {
+            return "true";
+        };
+        
+        API.getAll($rootScope.getToken()).success(function (data, status, headers, config) {
+            $rootScope.show("Please wait... Processing");
+            $scope.list = [];
+            $scope.categoriesLoaded = [];
+            for (var i = 0; i < data.length; i++) {
+                $scope.categoryExist = false;
+                
+                numOfCategories = $scope.categoriesLoaded.length;
+                console.log(numOfCategories);
+                
+                if (numOfCategories == 0) {
+                        $scope.categoriesLoaded.push(data[i].category);
+                        console.log(data[i].category);
+                }
+                
+                for (var j = 0; j < numOfCategories; j++) {    
+                    
+                    if (data[i].category == $scope.categoriesLoaded[j])
+                    {
+                        $scope.categoryExist = true;
+                    }
+                }
+                
+                if ($scope.categoryExist == false)
+                {
+                    $scope.list.push(data[i]);
+                    $scope.categoriesLoaded.push(data[i].category);
+                }
+            };
+            if($scope.list.length == 0)
+            {
+                $scope.noData = true;
+            }
+            else
+            {
+                $scope.noData = false;
+            }
+            
+            $ionicModal.fromTemplateUrl('templates/newItem.html', function (modal) {
+                $scope.newTemplate = modal;
+            });
+ 
+            $scope.newTask = function () {
+                $scope.newTemplate.show();
+            };
+                
+            $rootScope.hide();
+        }).error(function (data, status, headers, config) {
+            $rootScope.hide();
+            $rootScope.notify("Oops something went wrong!! Please try again later");
+        });
+    });
+ 
+    $rootScope.selectCategory = function (category) {
+                $window.location.href="#/clinif/category"
+                $rootScope.category = category
+                $scope.$broadcast("$destroy");
+            };
+    
+    $rootScope.toClinif = function () {
+                $window.location.href = ('#/clinif/list');
+//                $scope.$broadcast("$destroy");
+    }
+    
+    $rootScope.$broadcast('fetchAll');
+ 
 })
  
 .controller('newCtrl', function ($rootScope, $scope, API, $window) {

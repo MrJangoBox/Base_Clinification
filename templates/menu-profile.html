@@ -1,0 +1,37 @@
+<ion-header-bar class="bar-positive">
+   <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+   <h1 class="title" ng-repeat="user in profile">{{ user.firstName }}'s Profile</h1>
+   <button class="button button-clear" ng-click="logout()">Logout</button>
+</ion-header-bar>
+<ion-content class="has-header padding" has-tabs="true" on-refresh="onRefresh()">
+    <div class="list" ng-repeat="user in profile">
+      <label class="item item-input">
+      <span class="input-label">First Name</span>
+      <input type="text" ng-model="user.firstName2" placeholder="{{user.firstName}}">
+      </label>
+      <label class="item item-input">
+      <span class="input-label">Last Name</span>
+      <input type="text" ng-model="user.lastName2" placeholder="{{user.lastName}}">
+      </label>
+      <label class="item item-input">
+      <span class="input-label">Phone #</span>
+      <input type="text" ng-model="user.cellphone2" placeholder="{{user.cellphone}}">
+      </label>
+      <label class="item item-input">
+      <span class="input-label">Language</span>
+      <select ng-model="user.language">
+      <option>English</option>
+      <option>French</option>
+      </select>
+      </label>
+      <label class="item item-input">
+      <span class="input-label">Password</span>
+      <input type="password" ng-model="user.password2" placeholder="password">
+      </label>
+      <label class="item item-input">
+      <button class="button button-block button-positive" ng-click="createUser()">
+      Update
+      </button>
+      </label>
+    </div>
+</ion-content>  

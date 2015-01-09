@@ -1,11 +1,12 @@
 <ion-header-bar class="bar-positive">
+   <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+   <h1 class="title">My Appoitments List</h1>
    <button class="button button-clear" ng-click="newTask()">New</button>
-   <h1 class="title">My Base List</h1>
    <button class="button button-clear" ng-click="logout()">Logout</button>
 </ion-header-bar>
 <ion-content class="has-header padding" has-tabs="true" on-refresh="onRefresh()">
-   <ion-refresher ng-hide="noData" on-refresh="doRefresh('1')"></ion-refresher>
-   <div class="card" ng-repeat="item in list" >
+    <ion-refresher ng-hide="noData" on-refresh="doRefresh('1')"></ion-refresher>
+    <div class="card" ng-repeat="item in list" >
       <div class="item item-text-wrap">
          <span>
          {{ item.item }}
@@ -16,12 +17,12 @@
             <i class="ion-trash-b icon-actions margin" ng-click="deleteItem('{{item._id}}')"></i>
          </p>
       </div>
-   </div>
-   <div class="card" >
+    </div>
+    <div class="card" >
       <div class="item item-text-wrap" ng-show="noData">
          <span>
          No Items in your base List. Click  <a href="javascript:" ng-click="newTask()">Here</a> and create one
          </span>
       </div>
-   </div>
-</ion-content>
+    </div>
+</ion-content>  

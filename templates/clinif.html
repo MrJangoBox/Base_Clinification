@@ -1,0 +1,40 @@
+<ion-side-menus>
+    <!-- Center content -->
+    <ion-side-menu-content ng-controller="indexCtrl">
+        <ion-nav-bar class="bar-positive">
+            <ion-nav-buttons side="left">
+                <h1 class="title">Appointments</h1>
+                <ion-nav-back-button class="button-icon ion-arrow-left-c"></ion-nav-back-button>
+            </ion-nav-buttons>
+        </ion-nav-bar>
+        <ion-tabs class="tabs-icon-top">
+           <ion-tab title="My List" icon-on="ion-ios7-browsers" 
+              icon-off="ion-ios7-browsers-outline" href="#/clinif/list">
+              <ion-nav-view name="clinif-list"></ion-nav-view>
+           </ion-tab>
+           <ion-tab title="Completed" icon-on="ion-ios7-checkmark" 
+              icon-off="ion-ios7-checkmark-outline" href="#/clinif/completed">
+              <ion-nav-view name="clinif-completed"></ion-nav-view>
+           </ion-tab>
+        </ion-tabs>
+    </ion-side-menu-content>    
+    <!-- Left menu -->
+    <ion-side-menu side="left">
+      <a class="bar bar-header" nav-clear menu-close ui-sref="menu.home">
+          <h1 class="title">Menu</h1>
+        </a>
+        <ion-content class="has-header">
+          <ion-list>
+            <ion-item class="item-icon-left" nav-clear menu-close ng-click="logout()">
+              <i class="icon ion-ios7-locked"></i>
+              Log out 
+            </ion-item>
+              
+            <ion-item class="item-icon-left" nav-clear menu-close ng-click="toProfile()">
+              <i class="icon ion-briefcase"></i>
+              Profile 
+            </ion-item>
+          </ion-list>
+        </ion-content>
+    </ion-side-menu> 
+</ion-side-menus>

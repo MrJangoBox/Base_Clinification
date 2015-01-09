@@ -13,7 +13,12 @@
 </thead><tbody>
 <tr>
 	<td>open</td>
-	<td>/ClinificationApp/index.html#/auth/signin</td>
+	<td>http://127.0.0.1:49363/ClinificationApp/index.html#/auth/signin</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForAllFields</td>
+	<td></td>
 	<td></td>
 </tr>
 <tr>

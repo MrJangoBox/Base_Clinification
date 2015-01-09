@@ -1,4 +1,4 @@
-angular.module('baseApp.services', [])
+angular.module('clinifApp.services', [])
 
 .factory('API', function ($rootScope, $http, $ionicLoading, $window) {
     
@@ -54,13 +54,21 @@ angular.module('baseApp.services', [])
 
     return {
         signin: function (form) {
-            return $http.post(base+'/api/v1/baseApp/auth/login', form);
+            return $http.post(base+'/api/v1/clinifApp/auth/login', form);
         },
         signup: function (form) {
-            return $http.post(base+'/api/v1/baseApp/auth/register', form);
+            return $http.post(base+'/api/v1/clinifApp/auth/register', form);
+        },
+        getProfileInfo: function (cellphone) {
+            return $http.get(base+'/api/v1/clinifApp/auth/profile', {
+                method: 'GET',
+                params: {
+                    token: cellphone
+                }
+            });
         },
         getAll: function (cellphone) {
-            return $http.get(base+'/api/v1/baseApp/data/list', {
+            return $http.get(base+'/api/v1/clinifApp/data/list', {
                 method: 'GET',
                 params: {
                     token: cellphone
@@ -68,7 +76,7 @@ angular.module('baseApp.services', [])
             });
         },
         getOne: function (id, cellphone) {
-            return $http.get(base+'/api/v1/baseApp/data/item/' + id, {
+            return $http.get(base+'/api/v1/clinifApp/data/item/' + id, {
                 method: 'GET',
                 params: {
                     token: cellphone
@@ -76,7 +84,7 @@ angular.module('baseApp.services', [])
             });
         },
         saveItem: function (form, cellphone) {
-            return $http.post(base+'/api/v1/baseApp/data/item', form, {
+            return $http.post(base+'/api/v1/clinifApp/data/item', form, {
                 method: 'POST',
                 params: {
                     token: cellphone
@@ -84,7 +92,7 @@ angular.module('baseApp.services', [])
             });
         },
         putItem: function (id, form, cellphone) {
-            return $http.put(base+'/api/v1/baseApp/data/item/' + id, form, {
+            return $http.put(base+'/api/v1/clinifApp/data/item/' + id, form, {
                 method: 'PUT',
                 params: {
                     token: cellphone
@@ -92,7 +100,7 @@ angular.module('baseApp.services', [])
             });
         },
         deleteItem: function (id, cellphone) {
-            return $http.delete(base+'/api/v1/baseApp/data/item/' + id, {
+            return $http.delete(base+'/api/v1/clinifApp/data/item/' + id, {
                 method: 'DELETE',
                 params: {
                     token: cellphone
