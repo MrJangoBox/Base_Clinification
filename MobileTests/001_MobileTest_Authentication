@@ -23,7 +23,7 @@
 </tr>
 <tr>
 	<td>type</td>
-	<td>css=input[ng-model=&quot;user.cellphone&quot;]</td>
+	<td>css=input[ng-model=&quot;user.username&quot;]</td>
 	<td>user</td>
 </tr>
 <tr>
