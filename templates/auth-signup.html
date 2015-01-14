@@ -4,6 +4,10 @@
 <ion-content class="has-header padding">
    <div class="list">
       <label class="item item-input">
+      <span class="input-label">User Name</span>
+      <input type="text" ng-model="user.username">
+      </label>
+       <label class="item item-input">
       <span class="input-label">First Name</span>
       <input type="text" ng-model="user.firstName">
       </label>
@@ -13,13 +17,21 @@
       </label>
       <label class="item item-input">
       <span class="input-label">Phone #</span>
-      <input type="text" ng-model="user.cellphone">
+      <input type="text" ng-model="user.phoneNumber">
       </label>
       <label class="item item-input item-select">
       <span class="input-label">Language</span>
       <select ng-model="user.language">
           <option>English</option>
           <option>French</option>
+      </select>
+      </label>
+       <label class="item item-input item-select">
+      <span class="input-label">Account Type</span>
+      <select ng-model="user.accountType">
+          <option>Patient</option>
+          <option>Doctor</option>
+          <option>Secretary</option>
       </select>
       </label>
       <label class="item item-input">

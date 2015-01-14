@@ -7,7 +7,7 @@ angular.module('clinifApp.controllers', ['clinifApp.services'])
     }
  
     $scope.user = {
-        cellphone: "",
+        username: "",
         password: ""
     };
     
@@ -16,18 +16,18 @@ angular.module('clinifApp.controllers', ['clinifApp.services'])
     };
  
     $scope.validateUser = function () {
-        var cellphone = this.user.cellphone;
+        var username = this.user.username;
         var password = this.user.password;
-        if(!cellphone || !password) {
+        if(!username || !password) {
             $rootScope.notify("Please enter valid credentials");
             return false;
         }
         $rootScope.show('Please wait.. Authenticating');
         API.signin({
-            cellphone: cellphone,
+            username: username,
             password: password
         }).success(function (data) {
-            $rootScope.setToken(cellphone); // creates a session kind of thing on the client side
+            $rootScope.setToken(username); // creates a session kind of thing on the client side
             $rootScope.hide();
             $window.location.href = ('#/clinif/list');
         }).error(function (error) {
@@ -40,11 +40,13 @@ angular.module('clinifApp.controllers', ['clinifApp.services'])
  
 .controller('SignUpCtrl', function ($rootScope, $scope, API, $window) {
     $scope.user = {
+        username: "",
+        password: "",
         firstName: "",
         lastName: "",
-        cellphone: "",
-        language: "",
-        password: ""
+        accountType: "",
+        phoneNumber: "",
+        language: ""
     };
     
     $rootScope.showMenuButton = function () {
@@ -52,24 +54,28 @@ angular.module('clinifApp.controllers', ['clinifApp.services'])
     };
  
     $scope.createUser = function () {
+        var username = this.user.username;
+        var password = this.user.password;
         var firstName = this.user.firstName;
         var lastName = this.user.lastName;
-        var cellphone = this.user.cellphone;
+        var accountType = this.user.accountType;
+        var phoneNumber = this.user.phoneNumber;
         var language = this.user.language;
-        var password = this.user.password;
-        if(!cellphone || !password || !language) {
+        if(!username || !password || !language) {
             $rootScope.notify("Please enter valid data");
             return false;
         }
         $rootScope.show('Please wait.. Registering');
         API.signup({
+            username: username,
+            password: password,
             firstName: firstName,
             lastName: lastName,
-            cellphone: cellphone,
-            language: language,
-            password: password
+            accountType: accountType,
+            phoneNumber: phoneNumber,
+            language: language
         }).success(function (data) {
-            $rootScope.setToken(cellphone); // create a session kind of thing on the client side
+            $rootScope.setToken(username); // create a session kind of thing on the client side
             $rootScope.hide();
             $window.location.href = ('#/clinif/list');
         }).error(function (error) {
