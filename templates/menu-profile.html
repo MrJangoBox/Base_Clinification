@@ -15,7 +15,7 @@
       </label>
       <label class="item item-input">
       <span class="input-label">Phone #</span>
-      <input type="text" ng-model="user.phoneNumber" placeholder="{{user.phoneNumber}}">
+      <input type="text" ng-model="user.phoneNumber2" placeholder="{{user.phoneNumber}}">
       </label>
       <label class="item item-input">
       <span class="input-label">Language</span>
@@ -24,12 +24,18 @@
       <option>French</option>
       </select>
       </label>
+      <br />    
+<!--      <span class="input-label">Confirmation</span>-->
+      <div class="bar bar-stable">
+          <h1 class="title">Confirmation</h1>
+      </div>
+      <br /><br />
       <label class="item item-input">
       <span class="input-label">Password</span>
       <input type="password" ng-model="user.password2" placeholder="password">
       </label>
       <label class="item item-input">
-      <button class="button button-block button-positive" ng-click="createUser()">
+      <button class="button button-block button-positive" ng-click="updateProfile()">
       Update
       </button>
       </label>

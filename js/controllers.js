@@ -82,7 +82,7 @@ angular.module('clinifApp.controllers', ['clinifApp.services'])
             $rootScope.hide();
             if(error.error && error.error.code == 11000)
             {
-                $rootScope.notify("A user with this cellphone already exists");
+                $rootScope.notify("A user with this username already exists");
             }
             else
             {
@@ -183,8 +183,40 @@ angular.module('clinifApp.controllers', ['clinifApp.services'])
         });
     });
     
+    $scope.user = {
+        password: "",
+        firstName: "",
+        lastName: "",
+        phoneNumber: "",
+        language: ""
+    };
+    
+    $scope.updateProfile = function () {
+        
+        var password = this.user.password2;
+        var firstName = this.user.firstName2;
+        var lastName = this.user.lastName2;
+        var phoneNumber = this.user.phoneNumber2;
+        var language = this.user.language;
+        
+        $rootScope.show("Please wait... Updating List");
+        API.putProfile({
+            password: password,
+            firstName: firstName,
+            lastName: lastName,
+            phoneNumber: phoneNumber,
+            language: language
+        }, $rootScope.getToken())
+            .success(function (data, status, headers, config) {
+                $rootScope.hide();
+                $rootScope.doRefresh(1);
+            }).error(function (data, status, headers, config) {
+                $rootScope.hide();
+                $rootScope.notify("Oops something went wrong!! Please try again later");
+            });
+    };
+    
     $rootScope.$broadcast('fetchAll');
- 
 })
 
 // App index controller

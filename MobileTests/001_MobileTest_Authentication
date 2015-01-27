@@ -13,7 +13,7 @@
 </thead><tbody>
 <tr>
 	<td>open</td>
-	<td>http://127.0.0.1:49363/ClinificationApp/index.html#/auth/signin</td>
+	<td>http://127.0.0.1:53250/Mobile/ClinificationApp/index.html#/auth/signin</td>
 	<td></td>
 </tr>
 <tr>
@@ -24,7 +24,7 @@
 <tr>
 	<td>type</td>
 	<td>css=input[ng-model=&quot;user.username&quot;]</td>
-	<td>user</td>
+	<td>GaryChang</td>
 </tr>
 <tr>
 	<td>type</td>

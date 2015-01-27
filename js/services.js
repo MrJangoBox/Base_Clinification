@@ -67,6 +67,14 @@ angular.module('clinifApp.services', [])
                 }
             });
         },
+        putProfile: function (form, cellphone) {
+            return $http.put(base+'/api/v1/clinifApp/auth/updateProfile', form, {
+                method: 'PUT',
+                params: {
+                    token: cellphone
+                }
+            });
+        },
         getAll: function (cellphone) {
             return $http.get(base+'/api/v1/clinifApp/data/list', {
                 method: 'GET',
