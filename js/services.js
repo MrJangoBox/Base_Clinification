@@ -3,8 +3,8 @@ angular.module('clinifApp.services', [])
 .factory('API', function ($rootScope, $http, $ionicLoading, $window) {
     
 // Connection to the app server: 1) Local 2) Hosted by Heroku services
-//    var base = "http://localhost:9804";
-    var base = "http://clinificationappserver.herokuapp.com";
+    var base = "http://localhost:9804";
+//    var base = "http://clinificationappserver.herokuapp.com";
     $rootScope.show = function (text) {
         $rootScope.loading = $ionicLoading.show({
             content: text ? text : 'Loading',
