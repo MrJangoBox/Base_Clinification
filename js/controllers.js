@@ -187,6 +187,7 @@ angular.module('clinifApp.controllers', ['clinifApp.services'])
         password: "",
         firstName: "",
         lastName: "",
+        email: "",
         phoneNumber: "",
         language: ""
     };
@@ -196,6 +197,7 @@ angular.module('clinifApp.controllers', ['clinifApp.services'])
         var password = this.user.password2;
         var firstName = this.user.firstName2;
         var lastName = this.user.lastName2;
+        var email = this.user.email2;
         var phoneNumber = this.user.phoneNumber2;
         var language = this.user.language;
         
@@ -204,8 +206,59 @@ angular.module('clinifApp.controllers', ['clinifApp.services'])
             password: password,
             firstName: firstName,
             lastName: lastName,
+            email: email,
             phoneNumber: phoneNumber,
             language: language
+        }, $rootScope.getToken())
+            .success(function (data, status, headers, config) {
+                $rootScope.hide();
+                $rootScope.doRefresh(1);
+            }).error(function (data, status, headers, config) {
+                $rootScope.hide();
+                $rootScope.notify("Oops something went wrong!! Please try again later");
+            });
+    };
+    
+    $rootScope.$broadcast('fetchAll');
+})
+
+// Contact controller
+.controller('myContactCtrl', function ($rootScope, $scope, API, $timeout, $ionicModal, $window) {
+    $rootScope.$on('fetchAll', function(){
+        
+        $rootScope.showMenuButton = function () {
+            return "true";
+        };
+        
+        API.getContactInfo($rootScope.getToken()).success(function (data, status, headers, config) {
+            $rootScope.show("Please wait... Processing");
+            $scope.contact = [];
+            $scope.contact.push(data);
+                
+            $rootScope.hide();
+        }).error(function (data, status, headers, config) {
+            $rootScope.hide();
+            $rootScope.notify("Oops something went wrong!! Please try again later");
+        });
+    });
+    
+    $scope.user = {
+        phoneContact: "",
+        textContact: "",
+        emailContact: ""
+    };
+    
+    $scope.updateContact = function () {
+        
+        var phoneContact = this.user.phoneStatus;
+        var textContact = this.user.textStatus;
+        var emailContact = this.user.emailStatus;
+        
+        $rootScope.show("Please wait... Updating List");
+        API.putContact({
+            phoneContact: phoneContact,
+            textContact: textContact,
+            emailContact: emailContact
         }, $rootScope.getToken())
             .success(function (data, status, headers, config) {
                 $rootScope.hide();

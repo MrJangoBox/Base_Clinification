@@ -1,0 +1,39 @@
+<ion-header-bar class="bar-positive">
+   <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+   <h1 class="title" ng-repeat="user in contact">{{ user.firstName }}'s Contact</h1>
+   <button class="button button-clear" ng-click="logout()">Logout</button>
+</ion-header-bar>
+<ion-content class="has-header padding" has-tabs="true" on-refresh="onRefresh()">
+    <div class="list" ng-repeat="user in contact">
+      <label class="item item-divider">
+      <span class="input-label">Can be reached by</span>
+      </label>
+        
+      <ion-toggle ng-model="user.phoneStatus" ng-checked="user.phoneContact">Phone Call</ion-toggle>
+      <ion-toggle ng-model="user.textStatus" ng-checked="user.textContact">Text Message</ion-toggle>
+      <ion-toggle ng-model="user.emailStatus" ng-checked="user.emailContact">Email</ion-toggle>
+    
+        
+<!--
+      <label class="item item-input">
+      <span class="input-label">Text Message</span>
+      <input type="text" ng-model="user.lastName2" placeholder="{{user.lastName}}">
+      </label>
+      <label class="item item-input">
+      <span class="input-label">Email</span>
+      <input type="text" ng-model="user.phoneNumber2" placeholder="{{user.phoneNumber}}">
+      </label>
+-->
+        
+      <br />    
+      <div class="bar">
+          <h1 class="title">Confirmation</h1>
+      </div>
+      <br /><br />
+      <label class="item item-input">
+      <button class="button button-block button-positive" ng-click="updateContact()">
+      Update
+      </button>
+      </label>
+    </div>
+</ion-content>  

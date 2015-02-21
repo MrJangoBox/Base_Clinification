@@ -4,7 +4,8 @@ angular.module('clinifApp.services', [])
     
 // Connection to the app server: 1) Local 2) Hosted by Heroku services
 //    var base = "http://localhost:9804";
-    var base = "http://clinificationappserver.herokuapp.com";
+    var base = "http://clinificationappserver.herokuapp.com"
+//    var base = "http://clinificationmobileserver.herokuapp.com";
     $rootScope.show = function (text) {
         $rootScope.loading = $ionicLoading.show({
             content: text ? text : 'Loading',
@@ -69,6 +70,22 @@ angular.module('clinifApp.services', [])
         },
         putProfile: function (form, cellphone) {
             return $http.put(base+'/api/v1/clinifApp/auth/updateProfile', form, {
+                method: 'PUT',
+                params: {
+                    token: cellphone
+                }
+            });
+        },
+        getContactInfo: function (cellphone) {
+            return $http.get(base+'/api/v1/clinifApp/auth/contact', {
+                method: 'GET',
+                params: {
+                    token: cellphone
+                }
+            });
+        },
+        putContact: function (form, cellphone) {
+            return $http.put(base+'/api/v1/clinifApp/auth/updateContact', form, {
                 method: 'PUT',
                 params: {
                     token: cellphone

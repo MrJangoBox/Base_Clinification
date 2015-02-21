@@ -69,5 +69,14 @@ angular.module('clinifApp', ['ionic', 'clinifApp.controllers', 'clinifApp.servic
                     }
                 }
             })
+            .state('menu.contact', {
+                url: '/contact',
+                views: {
+                    'menu-contact': {
+                        templateUrl: 'templates/menu-contact.html',
+                        controller: 'myContactCtrl'
+                    }
+                }
+            })
         $urlRouterProvider.otherwise('/auth/signin');
     });
