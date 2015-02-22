@@ -13,7 +13,7 @@
 </thead><tbody>
 <tr>
 	<td>open</td>
-	<td>http://127.0.0.1:52859/ClinificationApp/index.html#/auth/signin</td>
+	<td>http://127.0.0.1:49434/ClinificationApp/index.html#/auth/signin</td>
 	<td></td>
 </tr>
 <tr>
@@ -58,25 +58,19 @@
 </tr>
 <tr>
 	<td>clickAt</td>
-	<td>css=input[ng-model=&quot;user.language&quot;]</td>
+	<td>css=i.icon.ion-ios7-toggle-outline</td>
 	<td></td>
-</tr>
-<tr>
-	<td>select</td>
-	<td>css=input[ng-model=&quot;user.language&quot;]</td>
-	<td>French</td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>css=input[ng-model=&quot;user.password2&quot;]</td>
-	<td>password</td>
 </tr>
 <tr>
 	<td>clickAt</td>
-	<td>//label[6]/button</td>
+	<td>//div[3]/label</td>
 	<td></td>
 </tr>
-
+<tr>
+	<td>clickAt</td>
+	<td>//label[2]/button</td>
+	<td></td>
+</tr>
 </tbody></table>
 </body>
 </html>
