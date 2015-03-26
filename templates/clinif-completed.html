@@ -1,9 +1,10 @@
 <ion-header-bar class="bar-positive">
-   <h1 class="title">Completed Items</h1>
+   <h1 class="title">My Appointments</h1>
    <button class="button button-clear" ng-click="logout()">Logout</button>
 </ion-header-bar>
 <ion-content class="has-header padding" has-tabs="true" on-refresh="onRefresh()">
    <ion-refresher ng-hide="noData || incomplete" on-refresh="doRefresh('2')"></ion-refresher>
+<!--
    <div class="card" ng-repeat="item in list" >
       <div class="item item-text-wrap">
          <span>
@@ -15,13 +16,44 @@
          </p>
       </div>
    </div>
+-->
+    
+    <div class="list card" ng-repeat="item in list">
+      <div class="item">
+        <h3><p>Doctor: </p></h3><h2>{{ item.docFirstName }} {{ item.docLastName }}</h2>
+      </div>
+
+      <div class="item item-body">
+        <p>
+            <p>
+              <a>Date:</a> <b><font size="+1">{{ item.appointmentDate }}</font></b>
+              <p>At <b><font size="+1">{{ item.startTime }}</font> pm</b>, Ending <b><font size="+1">{{ item.endTime }}</font> pm</b></p>
+              Please don't forget your medical insurance card and arrive 15min before.
+            </p>
+              <a href="#" class="subdued">1 Comments</a>
+        </p>
+      </div>
+
+      <div class="item tabs tabs-secondary tabs-icon-left">
+        <a class="tab-item">
+          <i class="icon ion-trash-b" ng-click="deleteItem('{{item._id}}')"></i>
+          Delete
+        </a>
+        <a class="tab-item" href="#">
+          <i class="icon ion-chatbox"></i>
+          Comment
+        </a>
+      </div>
+    </div>
+    
+    
    <div class="card" >
       <div class="item item-text-wrap" ng-show="noData || incomplete">
          <span ng-show="incomplete">
-         You can have not completed any of your base List items yet. Try harder!!
+         You have not yet Attended any Appointment.
          </span>
          <span ng-show="noData">
-         No Items in your base List.
+         No Previous Appointments to Show.
          </span>
       </div>
    </div>

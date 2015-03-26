@@ -57,78 +57,99 @@ angular.module('clinifApp.services', [])
         signin: function (form) {
             return $http.post(base+'/api/v1/clinifApp/auth/login', form);
         },
-        signup: function (form) {
-            return $http.post(base+'/api/v1/clinifApp/auth/register', form);
+        signupPatient: function (form) {
+            return $http.post(base+'/api/v1/clinifApp/auth/registerPatient', form);
         },
-        getProfileInfo: function (cellphone) {
+        signupAccount: function (form) {
+            return $http.post(base+'/api/v1/clinifApp/auth/registerAccount', form);
+        },
+        getProfileInfo: function (username) {
             return $http.get(base+'/api/v1/clinifApp/auth/profile', {
                 method: 'GET',
                 params: {
-                    token: cellphone
+                    token: username
                 }
             });
         },
-        putProfile: function (form, cellphone) {
+        putProfile: function (form, username) {
             return $http.put(base+'/api/v1/clinifApp/auth/updateProfile', form, {
                 method: 'PUT',
                 params: {
-                    token: cellphone
+                    token: username
                 }
             });
         },
-        getContactInfo: function (cellphone) {
+        getContactInfo: function (username) {
             return $http.get(base+'/api/v1/clinifApp/auth/contact', {
                 method: 'GET',
                 params: {
-                    token: cellphone
+                    token: username
                 }
             });
         },
-        putContact: function (form, cellphone) {
+        putContact: function (form, username) {
             return $http.put(base+'/api/v1/clinifApp/auth/updateContact', form, {
                 method: 'PUT',
                 params: {
-                    token: cellphone
+                    token: username
                 }
             });
         },
-        getAll: function (cellphone) {
+        getAccountInfo: function (username) {
+            return $http.get(base+'/api/v1/clinifApp/account/info', {
+                method: 'GET',
+                params: {
+                    token: username
+                }
+            });
+        },
+        getDoctorInfo: function (username) {
+            return $http.get(base+'/api/v1/clinifApp/doctor/info', {
+                method: 'GET',
+                params: {
+                    token: username,
+//                    doctorId: doctorId
+                }
+            });
+        },
+        getAllAppointments: function (username, patientid) {
             return $http.get(base+'/api/v1/clinifApp/data/list', {
                 method: 'GET',
                 params: {
-                    token: cellphone
+                    token: username,
+                    patientId: patientid
                 }
             });
         },
-        getOne: function (id, cellphone) {
+        getOne: function (id, username) {
             return $http.get(base+'/api/v1/clinifApp/data/item/' + id, {
                 method: 'GET',
                 params: {
-                    token: cellphone
+                    token: username
                 }
             });
         },
-        saveItem: function (form, cellphone) {
+        saveItem: function (form, username) {
             return $http.post(base+'/api/v1/clinifApp/data/item', form, {
                 method: 'POST',
                 params: {
-                    token: cellphone
+                    token: username
                 }
             });
         },
-        putItem: function (id, form, cellphone) {
+        putItem: function (id, form, username) {
             return $http.put(base+'/api/v1/clinifApp/data/item/' + id, form, {
                 method: 'PUT',
                 params: {
-                    token: cellphone
+                    token: username
                 }
             });
         },
-        deleteItem: function (id, cellphone) {
+        deleteItem: function (id, username) {
             return $http.delete(base+'/api/v1/clinifApp/data/item/' + id, {
                 method: 'DELETE',
                 params: {
-                    token: cellphone
+                    token: username
                 }
             });
         }

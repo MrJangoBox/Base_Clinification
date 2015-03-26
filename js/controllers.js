@@ -66,14 +66,40 @@ angular.module('clinifApp.controllers', ['clinifApp.services'])
             return false;
         }
         $rootScope.show('Please wait.. Registering');
-        API.signup({
+        
+        var currentDate = new Date();
+        
+        API.signupPatient({
+            firstName: firstName,
+            lastName: lastName,
+            cellphone: phoneNumber,
+            language: language,
+            createdAt: currentDate,
+            modifiedAt: currentDate
+        }).success(function (data) {
+            $rootScope.hide();
+        }).error(function (error) {
+            $rootScope.hide();
+            if(error.error && error.error.code == 11000)
+            {
+                $rootScope.notify("A user with this username already exists");
+            }
+            else
+            {
+                $rootScope.notify("Oops something went wrong, Please try again!");
+            }
+        });
+        
+        API.signupAccount({
             username: username,
             password: password,
             firstName: firstName,
             lastName: lastName,
             accountType: accountType,
             phoneNumber: phoneNumber,
-            language: language
+            language: language,
+            createdAt: currentDate,
+            modifiedAt: currentDate
         }).success(function (data) {
             $rootScope.setToken(username); // create a session kind of thing on the client side
             $rootScope.hide();
@@ -88,50 +114,132 @@ angular.module('clinifApp.controllers', ['clinifApp.services'])
             {
                 $rootScope.notify("Oops something went wrong, Please try again!");
             }
-            
         });
     }
 })
  
-// Appointment list controller
-.controller('myListCtrl', function ($rootScope, $scope, API, $timeout, $ionicModal, $window) {
-    $rootScope.$on('fetchAll', function(){
+// App index controller
+.controller('indexCtrl', function ($rootScope, $scope, API, $timeout, $ionicModal, $window) {
+    $rootScope.$on('LoadAccountInfo', function(){
         
-        $rootScope.showMenuButton = function () {
-            return "true";
-        };
-        
-        API.getAll($rootScope.getToken()).success(function (data, status, headers, config) {
+        API.getAccountInfo($rootScope.getToken()).success(function (data, status, headers, config) {
             $rootScope.show("Please wait... Processing");
-            $scope.list = [];
-            for (var i = 0; i < data.length; i++) {
-                if (data[i].isCompleted == false) {
-                    $scope.list.push(data[i]);
-                }
-            };
-            if($scope.list.length == 0)
-            {
-                $scope.noData = true;
-            }
-            else
-            {
-                $scope.noData = false;
-            }
-            
-            $ionicModal.fromTemplateUrl('templates/newItem.html', function (modal) {
-                $scope.newTemplate = modal;
-            });
- 
-            $scope.newTask = function () {
-                $scope.newTemplate.show();
-            };
-                
+//            $rootScope.accountId = data._id;
+//            $rootScope.patientId = data.patient;
+//            $rootScope.accountId = data._id;
+//            console.log($rootScope.accountId);
+
             $rootScope.hide();
         }).error(function (data, status, headers, config) {
             $rootScope.hide();
             $rootScope.notify("Oops something went wrong!! Please try again later");
         });
+
     });
+    
+    $rootScope.toProfile = function () {
+                $rootScope.hide();
+                $window.location.href = ('#/menu/profile');
+//                $scope.$broadcast("$destroy");
+            };
+    
+    $rootScope.$broadcast('LoadAccountInfo');
+})
+
+// Appointment list controller
+.controller('myListCtrl', function ($rootScope, $scope, API, $timeout, $ionicModal, $window) {
+    
+    $rootScope.$on('LoadAccountInfo', function() {
+        
+        API.getAccountInfo($rootScope.getToken()).success(function (data, status, headers, config) {
+            $rootScope.show("Please wait... Processing");
+            $rootScope.patientId = data.boundPatient;
+
+            $rootScope.hide();
+        }).error(function (data, status, headers, config) {
+            $rootScope.hide();
+            $rootScope.notify("Oops something went wrong!! Please try again later");
+        });
+
+    });
+    
+    $rootScope.$on('fetchAll', function(){
+        
+        var doctorInfos = [];
+        
+        $rootScope.showMenuButton = function () {
+            return "true";
+        };
+        
+        API.getAccountInfo($rootScope.getToken()).success(function (data, status, headers, config) {
+            $rootScope.show("Please wait... Processing");
+            $rootScope.patientId = data.boundPatient;
+
+            $rootScope.hide();
+            
+            API.getDoctorInfo($rootScope.getToken()).success(function (doctorData, status, headers, config) {
+                $rootScope.show("Please wait... Processing");
+                doctorInfos = doctorData;
+                $rootScope.hide();
+            }).error(function (data, status, headers, config) {
+                $rootScope.hide();
+                $rootScope.notify("Oops something went wrong!! Please try again later");
+                console.log($scope.list);
+            });
+            
+            API.getAllAppointments($rootScope.getToken(), $rootScope.patientId).success(function (data, status, headers, config) {
+
+                $rootScope.show("Please wait... Processing");
+                $scope.list = [];
+                
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i].isCompleted == false) {
+
+                        for (var j = 0; j < doctorInfos.length; j++) {
+                            if (doctorInfos[j]._id == data[i].doctor) {
+                                data[i].docFirstName = doctorInfos[j].firstName;
+                                data[i].docLastName = doctorInfos[j].lastName;
+                            }
+                        }
+                    
+                        data[i].appointmentDate = data[i].startTime.substring(0,10);
+                        data[i].startTime = data[i].startTime.substring(12,16);
+                        data[i].endTime = data[i].endTime.substring(12,16);
+                        $scope.list.push(data[i]);
+                    }
+                };
+                
+                if($scope.list.length == 0)
+                {
+                    $scope.noData = true;
+                }
+                else
+                {
+                    $scope.noData = false;
+                }
+
+                $ionicModal.fromTemplateUrl('templates/newItem.html', function (modal) {
+                    $scope.newTemplate = modal;
+                });
+
+                $scope.newTask = function () {
+                    $scope.newTemplate.show();
+                };
+
+                $rootScope.hide();
+            }).error(function (data, status, headers, config) {
+                $rootScope.hide();
+                $rootScope.notify("Oops something went wrong!! Please try again later");
+                console.log($scope.list);
+            });
+        }).error(function (data, status, headers, config) {
+            $rootScope.hide();
+            $rootScope.notify("Oops something went wrong!! Please try again later");
+        });
+        
+    });
+    
+    $rootScope.$broadcast('LoadAccountInfo');
     
     $rootScope.$broadcast('fetchAll');
     
@@ -271,107 +379,78 @@ angular.module('clinifApp.controllers', ['clinifApp.services'])
     
     $rootScope.$broadcast('fetchAll');
 })
-
-// App index controller
-.controller('indexCtrl', function ($rootScope, $scope, API, $timeout, $ionicModal, $window) {
-    $rootScope.$on('fetchAll', function(){
-        
-        API.getAll($rootScope.getToken()).success(function (data, status, headers, config) {
-            $rootScope.show("Please wait... Processing");
-            $scope.list = [];
-            $scope.categoriesLoaded = [];
-            for (var i = 0; i < data.length; i++) {
-                $scope.categoryExist = false;
-                
-                numOfCategories = $scope.categoriesLoaded.length;
-                console.log(numOfCategories);
-                
-                if (numOfCategories == 0) {
-                        $scope.categoriesLoaded.push(data[i].category);
-                        console.log(data[i].category);
-                }
-                
-                for (var j = 0; j < numOfCategories; j++) {    
-                    
-                    if (data[i].category == $scope.categoriesLoaded[j])
-                    {
-                        $scope.categoryExist = true;
-                    }
-                }
-                
-                if ($scope.categoryExist == false)
-                {
-                    $scope.list.push(data[i]);
-                    $scope.categoriesLoaded.push(data[i].category);
-                }
-            };
-            if($scope.list.length == 0)
-            {
-                $scope.noData = true;
-            }
-            else
-            {
-                $scope.noData = false;
-            }
-            
-            $ionicModal.fromTemplateUrl('templates/newItem.html', function (modal) {
-                $scope.newTemplate = modal;
-            });
  
-            $scope.newTask = function () {
-                $scope.newTemplate.show();
-            };
-                
+.controller('completedCtrl', function ($rootScope,$scope, API, $window) {
+    $rootScope.$on('LoadAccountInfo', function() {
+        
+        API.getAccountInfo($rootScope.getToken()).success(function (data, status, headers, config) {
+            $rootScope.show("Please wait... Processing");
+            $rootScope.patientId = data.boundPatient;
+
             $rootScope.hide();
         }).error(function (data, status, headers, config) {
             $rootScope.hide();
             $rootScope.notify("Oops something went wrong!! Please try again later");
         });
-    });
- 
-    $rootScope.selectCategory = function (category) {
-                $window.location.href="#/clinif/category"
-                $rootScope.category = category
-                $scope.$broadcast("$destroy");
-            };
-    
-    $rootScope.toProfile = function () {
-                $rootScope.hide();
-                $window.location.href = ('#/menu/profile');
-//                $scope.$broadcast("$destroy");
-            };
-    
-    $rootScope.$broadcast('fetchAll');
- 
-})
- 
-.controller('completedCtrl', function ($rootScope,$scope, API, $window) {
-    $rootScope.$on('fetchCompleted', function () {
-        API.getAll($rootScope.getToken()).success(function (data, status, headers, config) {
-            $scope.list = [];
-            for (var i = 0; i < data.length; i++) {
-                if (data[i].isCompleted == true) {
-                    $scope.list.push(data[i]);
-                }
-            };
-            if(data.length > 0 & $scope.list.length == 0)
-            {
-                $scope.incomplete = true;
-            }
-            else
-            {
-                $scope.incomplete= false;
-            }
 
-            if(data.length == 0)
-            {
-                $scope.noData = true;
-            }
-            else
-            {
-                $scope.noData = false;
-            }
+    });
+    
+    $rootScope.$on('fetchCompleted', function () {
+        API.getAccountInfo($rootScope.getToken()).success(function (data, status, headers, config) {
+            $rootScope.show("Please wait... Processing");
+            $rootScope.patientId = data.boundPatient;
+
+            $rootScope.hide();
+            
+            API.getDoctorInfo($rootScope.getToken()).success(function (doctorData, status, headers, config) {
+                $rootScope.show("Please wait... Processing");
+                doctorInfos = doctorData;
+                $rootScope.hide();
+            }).error(function (data, status, headers, config) {
+                $rootScope.hide();
+                $rootScope.notify("Oops something went wrong!! Please try again later");
+                console.log($scope.list);
+            });
+            
+            API.getAllAppointments($rootScope.getToken(), $rootScope.patientId).success(function (data, status, headers, config) {
+
+                $rootScope.show("Please wait... Processing");
+                $scope.list = [];
+                
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i].isCompleted == true) {
+
+                        for (var j = 0; j < doctorInfos.length; j++) {
+                            if (doctorInfos[j]._id == data[i].doctor) {
+                                data[i].docFirstName = doctorInfos[j].firstName;
+                                data[i].docLastName = doctorInfos[j].lastName;
+                            }
+                        }
+                    
+                        data[i].appointmentDate = data[i].startTime.substring(0,10);
+                        data[i].startTime = data[i].startTime.substring(12,16);
+                        data[i].endTime = data[i].endTime.substring(12,16);
+                        $scope.list.push(data[i]);
+                    }
+                };
+                
+                if($scope.list.length == 0)
+                {
+                    $scope.noData = true;
+                }
+                else
+                {
+                    $scope.noData = false;
+                }
+
+                $rootScope.hide();
+            }).error(function (data, status, headers, config) {
+                $rootScope.hide();
+                $rootScope.notify("Oops something went wrong!! Please try again later");
+                console.log($scope.list);
+            });
         }).error(function (data, status, headers, config) {
+            $rootScope.hide();
             $rootScope.notify("Oops something went wrong!! Please try again later");
         });
 
@@ -381,7 +460,9 @@ angular.module('clinifApp.controllers', ['clinifApp.services'])
         return "true";
     };
     
+    $rootScope.$broadcast('LoadAccountInfo');
     $rootScope.$broadcast('fetchCompleted');
+    
     $scope.deleteItem = function (id) {
         $rootScope.show("Please wait... Deleting from List");
         API.deleteItem(id, $rootScope.getToken())
@@ -403,57 +484,6 @@ angular.module('clinifApp.controllers', ['clinifApp.services'])
             return "true";
         };
         
-        API.getAll($rootScope.getToken()).success(function (data, status, headers, config) {
-            $rootScope.show("Please wait... Processing");
-            $scope.list = [];
-            $scope.categoriesLoaded = [];
-            for (var i = 0; i < data.length; i++) {
-                $scope.categoryExist = false;
-                
-                numOfCategories = $scope.categoriesLoaded.length;
-                console.log(numOfCategories);
-                
-                if (numOfCategories == 0) {
-                        $scope.categoriesLoaded.push(data[i].category);
-                        console.log(data[i].category);
-                }
-                
-                for (var j = 0; j < numOfCategories; j++) {    
-                    
-                    if (data[i].category == $scope.categoriesLoaded[j])
-                    {
-                        $scope.categoryExist = true;
-                    }
-                }
-                
-                if ($scope.categoryExist == false)
-                {
-                    $scope.list.push(data[i]);
-                    $scope.categoriesLoaded.push(data[i].category);
-                }
-            };
-            if($scope.list.length == 0)
-            {
-                $scope.noData = true;
-            }
-            else
-            {
-                $scope.noData = false;
-            }
-            
-            $ionicModal.fromTemplateUrl('templates/newItem.html', function (modal) {
-                $scope.newTemplate = modal;
-            });
- 
-            $scope.newTask = function () {
-                $scope.newTemplate.show();
-            };
-                
-            $rootScope.hide();
-        }).error(function (data, status, headers, config) {
-            $rootScope.hide();
-            $rootScope.notify("Oops something went wrong!! Please try again later");
-        });
     });
  
     $rootScope.selectCategory = function (category) {
@@ -464,7 +494,7 @@ angular.module('clinifApp.controllers', ['clinifApp.services'])
     
     $rootScope.toClinif = function () {
                 $window.location.href = ('#/clinif/list');
-//                $scope.$broadcast("$destroy");
+                $scope.$broadcast("$destroy");
     }
     
     $rootScope.$broadcast('fetchAll');
@@ -488,15 +518,23 @@ angular.module('clinifApp.controllers', ['clinifApp.services'])
 
         $rootScope.show("Please wait... Creating new");
 
-        var form = {
-            item: item,
-            isCompleted: false,
-            user: $rootScope.getToken(),
-            created: Date.now(),
-            updated: Date.now()
-        }
+        API.getAccountInfo($rootScope.getToken()).success(function (data, status, headers, config) {
+            $rootScope.show("Please wait... Processing");
+            $rootScope.accountId = data._id;
+            console.log($rootScope.accountId);
 
-        API.saveItem(form, form.user)
+            $rootScope.hide();
+            
+            var form = {
+                item: item,
+                isCompleted: false,
+                user: $rootScope.getToken(),
+                account: $rootScope.accountId,
+                created: Date.now(),
+                updated: Date.now()
+            }
+            
+            API.saveItem(form, form.user)
             .success(function (data, status, headers, config) {
                 $rootScope.hide();
                 $rootScope.doRefresh(1);
@@ -505,5 +543,10 @@ angular.module('clinifApp.controllers', ['clinifApp.services'])
                 $rootScope.hide();
                 $rootScope.notify("Oops something went wrong!! Please try again later");
             });
+            
+        }).error(function (data, status, headers, config) {
+            $rootScope.hide();
+            $rootScope.notify("Oops something went wrong!! Please try again later");
+        });
     };
 })
