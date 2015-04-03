@@ -25,7 +25,7 @@ angular.module('clinifApp.services', [])
         $window.location.href = '#/auth/signin';
     };
 
-    $rootScope.notify =function(text){
+    $rootScope.notify = function(text){
         $rootScope.show(text);
         $window.setTimeout(function () {
           $rootScope.hide();
