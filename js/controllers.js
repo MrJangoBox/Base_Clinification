@@ -193,7 +193,7 @@ angular.module('clinifApp.controllers', ['clinifApp.services'])
                 $scope.list = [];
                 
                 for (var i = 0; i < data.length; i++) {
-                    if (data[i].isCompleted == false) {
+                    if (data[i].status == "new" || data[i].status == "notified") {
 
                         for (var j = 0; j < doctorInfos.length; j++) {
                             if (doctorInfos[j]._id == data[i].doctor) {
@@ -243,10 +243,10 @@ angular.module('clinifApp.controllers', ['clinifApp.services'])
     
     $rootScope.$broadcast('fetchAll');
     
-    $scope.markCompleted = function (id) {
+    $scope.markConfirmed = function (id) {
         $rootScope.show("Please wait... Updating List");
         API.putItem(id, {
-            isCompleted: true
+            status: "confirmed"
         }, $rootScope.getToken())
             .success(function (data, status, headers, config) {
                 $rootScope.hide();
@@ -418,7 +418,7 @@ angular.module('clinifApp.controllers', ['clinifApp.services'])
                 $scope.list = [];
                 
                 for (var i = 0; i < data.length; i++) {
-                    if (data[i].isCompleted == true) {
+                    if (data[i].status == "confirmed") {
 
                         for (var j = 0; j < doctorInfos.length; j++) {
                             if (doctorInfos[j]._id == data[i].doctor) {
@@ -462,6 +462,20 @@ angular.module('clinifApp.controllers', ['clinifApp.services'])
     
     $rootScope.$broadcast('LoadAccountInfo');
     $rootScope.$broadcast('fetchCompleted');
+    
+    $scope.markCancelled = function (id) {
+        $rootScope.show("Please wait... Updating List");
+        API.putItem(id, {
+            status: "cancelled"
+        }, $rootScope.getToken())
+            .success(function (data, status, headers, config) {
+                $rootScope.hide();
+                $rootScope.doRefresh(1);
+            }).error(function (data, status, headers, config) {
+                $rootScope.hide();
+                $rootScope.notify("Oops something went wrong!! Please try again later");
+            });
+    };
     
     $scope.deleteItem = function (id) {
         $rootScope.show("Please wait... Deleting from List");
